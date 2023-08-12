@@ -987,14 +987,11 @@ class Select extends Field implements Contracts\HasAffixActions, Contracts\HasNe
         $this->saveRelationshipsUsing(static function (Select $component, Model $record, $state) {
             $relationship = $component->getRelationship();
 
-            if ($relationship instanceof BelongsToMany) {
-                $relationship->sync($state ?? []);
-
+            if (! $relationship instanceof BelongsToMany) {
                 return;
             }
 
-            $relationship->associate($state);
-            $record->save();
+            $relationship->sync($state ?? []);
         });
 
         $this->createOptionUsing(static function (Select $component, array $data, Form $form) {
@@ -1179,5 +1176,16 @@ class Select extends Field implements Contracts\HasAffixActions, Contracts\HasNe
     public function isSearchForcedCaseInsensitive(): bool
     {
         return (bool) $this->evaluate($this->isSearchForcedCaseInsensitive);
+    }
+
+    public function getDefaultState(): mixed
+    {
+        $state = parent::getDefaultState();
+
+        if (is_bool($state)) {
+            return $state ? 1 : 0;
+        }
+
+        return $state;
     }
 }
