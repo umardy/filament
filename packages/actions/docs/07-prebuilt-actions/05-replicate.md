@@ -110,7 +110,7 @@ ReplicateAction::make()
     ->beforeReplicaSaved(function (Model $replica): void {
         // Runs after the record has been replicated but before it is saved to the database.
     })
-    ->after(function (Model $replica): void {
+    ->afterReplicaSaved(function (Model $replica): void {
         // Runs after the replica has been saved to the database.
     })
 ```
